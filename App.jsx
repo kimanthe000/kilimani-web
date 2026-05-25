@@ -188,20 +188,20 @@ function Hero({ onSelectProduct, startAtFinalState }) {
           {
             opacity: 1,
             y: 0,
-            duration: 0.7,
+            duration: 0.8,
             ease: 'power3.out',
           },
-          2.8
+          3.2
         )
         .to(
           itemElements,
           {
             opacity: 1,
-            duration: 0.75,
-            stagger: 0.12,
+            duration: 0.8,
+            stagger: 0.1,
             ease: 'power2.out',
           },
-          4
+          3.2
         );
     }, heroRef);
 
