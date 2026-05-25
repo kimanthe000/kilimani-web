@@ -156,6 +156,15 @@ function Hero({ onSelectProduct, startAtFinalState }) {
           2.2
         )
         .to(
+          sunRef.current,
+          {
+            opacity: 0,
+            duration: 1.2,
+            ease: 'power2.out',
+          },
+          2.2
+        )
+        .to(
           foregroundRef.current,
           {
             opacity: 0,
@@ -209,14 +218,20 @@ function Hero({ onSelectProduct, startAtFinalState }) {
       <div ref={contentRef} className="heroContent">
         <header className="heroNav" aria-label="Primary">
           <a href="/" className="brand" aria-label="Kilimani home">
-            kilimani
+            <img src="/kilimanilogo2.png" alt="Kilimani" />
           </a>
-          <button className="menuButton" aria-label="menu">
-            <span />
-            <span />
-            <span />
-          </button>
+          <div className="heroControls">
+            <button className="cartButton" type="button" aria-label="Cart with zero items">
+              Cart <span>0</span>
+            </button>
+          </div>
         </header>
+
+        <div className="heroCenter" aria-hidden="true">
+          <div className="heroCenterFrame">
+            <img src="/model.jpg" alt="Kilimani model" />
+          </div>
+        </div>
 
         <div className="productLayer" aria-label="Kilimani jacket colors">
           {productItems.map((item, index) => (
@@ -235,6 +250,16 @@ function Hero({ onSelectProduct, startAtFinalState }) {
               </span>
             </button>
           ))}
+        </div>
+
+        <div className="heroFooter">
+          <nav aria-label="Site legal and social links">
+            <a href="#terms">Terms & Conditions</a>
+            <a href="#shipping">Shipping & Returns</a>
+            <a href="https://www.instagram.com/kilimanistudios?igsh=MXhnbHVyaXEzNXRvcw==" target="_blank" rel="noreferrer">
+              Social
+            </a>
+          </nav>
         </div>
       </div>
     </section>
