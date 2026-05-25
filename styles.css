@@ -6,14 +6,24 @@
   color-scheme: dark;
 }
 
+/* Font face - expects goudos.ttf to be placed in /public */
+@font-face {
+  font-family: 'Goudos';
+  src: url('/GOUDOS.TTF') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
 html,
 body,
 #root {
   width: 100%;
   height: 100%;
   margin: 0;
-  background: #050505;
-  font-family: Inter, Helvetica, Arial, sans-serif;
+  background: #ffffff;
+  font-family: 'Goudos', Inter, Helvetica, Arial, sans-serif;
+  font-size: 9pt;
 }
 
 * {
@@ -53,13 +63,7 @@ a {
 .heroBackground {
   inset: 0;
   z-index: 1;
-  background-image:
-    linear-gradient(rgba(0, 0, 0, 0.02), rgba(0, 0, 0, 0.2)),
-    url('/savannah.png');
-  background-size: cover;
-  background-position: center center;
-  transform-origin: center center;
-  filter: blur(0px) saturate(1.05) contrast(1.04);
+  background: transparent;
 }
 
 .gradientLayer {
@@ -138,10 +142,45 @@ a {
   z-index: 6;
 }
 
+.heroSideNav {
+  position: absolute;
+  left: clamp(1rem, 3vw, 3rem);
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 6;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  align-items: flex-start;
+}
+
+.heroSideNav .season,
+.heroSideNav .sideNav a {
+  font-size: 9pt;
+  color: #050505;
+  text-decoration: none;
+}
+
+.heroSideNav .sideNav {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
 .brand img {
   display: block;
   height: clamp(36px, 4.4vw, 52px);
   width: auto;
+}
+
+.brandImg {
+  transform: scale(1.1);
+}
+
+.topShop {
+  display: none;
+  margin-right: 0.5rem;
+  font-size: 9pt;
 }
 
 .heroControls {
@@ -192,7 +231,7 @@ a {
 .heroCenterFrame {
   width: clamp(320px, 48vw, 640px);
   aspect-ratio: 0.8;
-  border-radius: 32px;
+  border-radius: 0;
   overflow: hidden;
   background: #fff;
 }
@@ -209,6 +248,7 @@ a {
   position: absolute;
   inset: 0;
   pointer-events: none;
+  display: none !important;
 }
 
 .productItem {
@@ -305,11 +345,14 @@ a {
 
 @media (max-width: 720px) {
   .hero {
-    min-height: 560px;
+    min-height: 100vh;
   }
 
   .heroCenterFrame {
-    width: clamp(240px, 68vw, 340px);
+    width: 100vw;
+    aspect-ratio: auto;
+    border-radius: 0;
+    height: auto;
   }
 
   .productItem {
@@ -323,6 +366,9 @@ a {
 
   .productItem--right {
     left: 86%;
+  }
+  .topShop {
+    display: inline-block;
   }
 }
 

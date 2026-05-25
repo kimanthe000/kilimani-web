@@ -1,5 +1,4 @@
-import { gsap } from 'gsap';
-import { useLayoutEffect, useMemo, useRef, useState } from 'react';
+import { useMemo, useState } from 'react';
 
 const products = {
   oil: {
@@ -25,231 +24,35 @@ const products = {
 const productItems = [products.oil, products.ash];
 const sizes = ['XS', 'S', 'M', 'L', 'XL'];
 
-function Hero({ onSelectProduct, startAtFinalState }) {
-  const heroRef = useRef(null);
-  const backgroundRef = useRef(null);
-  const gradientRef = useRef(null);
-  const sunRef = useRef(null);
-  const foregroundRef = useRef(null);
-  const contentRef = useRef(null);
-  const itemRefs = useRef([]);
-
-  useLayoutEffect(() => {
-    const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    const getFinalSunMetrics = () => {
-      const width = window.innerWidth;
-      const height = window.innerHeight;
-      const sunSize = Math.min(width * 0.7, height * 0.86);
-      const jacketGap = 10;
-      const isMobile = width <= 720;
-      const topPadding = isMobile ? 104 : Math.min(Math.max(height * 0.12, 96), 140);
-      const preferredItemSize = isMobile ? Math.min(width * 0.42, height * 0.32) : Math.min(width * 0.225, height * 0.36);
-      const itemSize = isMobile ? Math.min(Math.max(preferredItemSize, 138), 192) : Math.min(Math.max(preferredItemSize, 177), 315);
-      const maxVisibleSun = height - topPadding - itemSize - jacketGap;
-      const visibleSun = Math.max(0, Math.min(sunSize * 0.58, maxVisibleSun));
-
-      return {
-        bottom: visibleSun - sunSize,
-        size: sunSize,
-      };
-    };
-
-    const ctx = gsap.context(() => {
-      const itemElements = itemRefs.current.filter(Boolean);
-
-      gsap.set([backgroundRef.current, gradientRef.current, sunRef.current, foregroundRef.current, contentRef.current, ...itemElements], {
-        willChange: 'transform, opacity',
-      });
-
-      gsap.set(itemElements, {
-        opacity: 0,
-      });
-
-      gsap.set(sunRef.current, {
-        left: '50%',
-        xPercent: -50,
-        x: 0,
-      });
-
-      if (reduceMotion || startAtFinalState) {
-        const finalSun = getFinalSunMetrics();
-
-        gsap.set([backgroundRef.current, foregroundRef.current], {
-          opacity: 0,
-          scale: 1.18,
-        });
-        gsap.set(gradientRef.current, {
-          opacity: 1,
-        });
-        gsap.set(sunRef.current, {
-          width: finalSun.size,
-          height: finalSun.size,
-          left: '50%',
-          top: 'auto',
-          bottom: finalSun.bottom,
-          xPercent: -50,
-          y: 0,
-          scale: 1,
-        });
-        gsap.set(contentRef.current, {
-          opacity: 1,
-          y: 0,
-        });
-        gsap.set(itemElements, {
-          opacity: 1,
-        });
-        return;
-      }
-
-      const timeline = gsap.timeline({
-        defaults: {
-          ease: 'power3.inOut',
-        },
-      });
-
-      timeline
-        .to(sunRef.current, {
-          duration: 0.5,
-          scale: 1.045,
-          filter: 'blur(0.35px)',
-          ease: 'sine.inOut',
-        })
-        .to(sunRef.current, {
-          duration: 0.5,
-          scale: 1,
-          filter: 'blur(0px)',
-          ease: 'sine.inOut',
-        })
-        .to(sunRef.current, {
-          left: '50%',
-          xPercent: -50,
-          x: 0,
-          y: '-18vh',
-          duration: 1.2,
-          ease: 'power2.out',
-        })
-        .to(
-          sunRef.current,
-          {
-            width: () => getFinalSunMetrics().size,
-            height: () => getFinalSunMetrics().size,
-            left: '50%',
-            xPercent: -50,
-            x: 0,
-            bottom: () => getFinalSunMetrics().bottom,
-            y: 0,
-            scale: 1,
-            duration: 1.8,
-            ease: 'power3.inOut',
-          },
-          2.2
-        )
-        .to(
-          backgroundRef.current,
-          {
-            opacity: 0,
-            scale: 1.2,
-            filter: 'blur(30px) saturate(1.85) contrast(1.2)',
-            duration: 1.2,
-            ease: 'power2.inOut',
-          },
-          2.2
-        )
-        .to(
-          sunRef.current,
-          {
-            opacity: 0,
-            duration: 1.2,
-            ease: 'power2.out',
-          },
-          2.2
-        )
-        .to(
-          foregroundRef.current,
-          {
-            opacity: 0,
-            scale: 1.08,
-            duration: 0.9,
-            ease: 'power2.inOut',
-          },
-          2.35
-        )
-        .to(
-          gradientRef.current,
-          {
-            opacity: 1,
-            duration: 1.2,
-            ease: 'power2.inOut',
-          },
-          2.2
-        )
-        .to(
-          contentRef.current,
-          {
-            opacity: 1,
-            y: 0,
-            duration: 0.8,
-            ease: 'power3.out',
-          },
-          3.2
-        )
-        .to(
-          itemElements,
-          {
-            opacity: 1,
-            duration: 0.8,
-            stagger: 0.1,
-            ease: 'power2.out',
-          },
-          3.2
-        );
-    }, heroRef);
-
-    return () => ctx.revert();
-  }, [startAtFinalState]);
-
+function Hero({ onSelectProduct }) {
   return (
-    <section ref={heroRef} className="hero" aria-label="Kilimani landing hero">
-      <div ref={backgroundRef} className="heroBackground" />
-      <div ref={gradientRef} className="gradientLayer" />
-      <div ref={sunRef} className="sun" />
-      <div ref={foregroundRef} className="foregroundMask" />
-
-      <div ref={contentRef} className="heroContent">
+    <section className="hero staticHero" aria-label="Kilimani landing hero">
+      <div className="heroContent" style={{ opacity: 1, transform: 'none' }}>
         <header className="heroNav" aria-label="Primary">
-          <a href="/" className="brand" aria-label="Kilimani home">
-            <img src="/kilimanilogo2.png" alt="Kilimani" />
-          </a>
           <div className="heroControls">
+            <span className="topShop">Shop</span>
+            <a href="/" className="brand" aria-label="Kilimani home">
+              <img src="/kilimani-logo-blk.png" alt="Kilimani" className="brandImg" />
+            </a>
             <button className="cartButton" type="button" aria-label="Cart with zero items">
               Cart <span>0</span>
             </button>
           </div>
         </header>
 
+        <aside className="heroSideNav" aria-hidden="false">
+          <div className="season">Spring/Summer 26'</div>
+          <nav className="sideNav" aria-label="Primary navigation">
+            <a href="#shop">Shop</a>
+            <a href="#gallery">Gallery</a>
+            <a href="#about">About</a>
+          </nav>
+        </aside>
+
         <div className="heroCenter" aria-hidden="true">
           <div className="heroCenterFrame">
             <img src="/model.jpg" alt="Kilimani model" />
           </div>
-        </div>
-
-        <div className="productLayer" aria-label="Kilimani jacket colors">
-          {productItems.map((item, index) => (
-            <button
-              key={item.id}
-              ref={(node) => {
-                itemRefs.current[index] = node;
-              }}
-              className={`productItem productItem--${item.side}`}
-              type="button"
-              aria-label={`View ${item.color} jacket`}
-              onClick={() => onSelectProduct(item.id)}
-            >
-              <span className="productCard">
-                <img src={item.src} alt="" aria-hidden="true" />
-              </span>
-            </button>
-          ))}
         </div>
 
         <div className="heroFooter">
@@ -428,5 +231,5 @@ export default function App() {
     return <ProductPage initialProductId={selectedProductId} onBack={returnToLanding} />;
   }
 
-  return <Hero onSelectProduct={openProduct} startAtFinalState={showFinalLanding} />;
+  return <Hero onSelectProduct={openProduct} />;
 }
