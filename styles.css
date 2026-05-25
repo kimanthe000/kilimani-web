@@ -142,6 +142,86 @@ a {
   z-index: 6;
 }
 
+.heroTopControls {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.heroTopControls .navLink {
+  position: relative;
+  border: 0;
+  background: transparent;
+  color: #050505;
+  font-size: 9pt;
+  cursor: pointer;
+  padding: 0;
+}
+
+.heroTopControls .navLink::after,
+.heroSideNav .sideNav a::after,
+.heroRightSeason .navLink::after,
+.footerLink::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -0.125rem;
+  height: 2px;
+  background: #050505;
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 160ms ease;
+}
+
+.heroTopControls .navLink:hover::after,
+.heroSideNav .sideNav a:hover::after,
+.heroRightSeason .navLink:hover::after,
+.footerLink:hover::after {
+  transform: scaleX(1);
+}
+
+.menuToggle {
+  display: none;
+  border: 0;
+  background: transparent;
+  cursor: pointer;
+  padding: 0.25rem;
+  gap: 0.35rem;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.menuToggle span {
+  display: block;
+  width: 22px;
+  height: 2px;
+  background: #050505;
+}
+
+.heroBody {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: center;
+  height: 100%;
+}
+
+.heroRightSeason {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  padding-right: clamp(1rem, 3vw, 3rem);
+}
+
+.heroRightSeason .navLink {
+  border: 0;
+  background: none;
+  color: #050505;
+  font-size: 9pt;
+  cursor: pointer;
+  padding: 0;
+}
+
 .heroSideNav {
   position: absolute;
   left: clamp(1rem, 3vw, 3rem);
@@ -175,6 +255,10 @@ a {
 
 .brandImg {
   transform: scale(1.1);
+}
+
+.brandImg {
+  transform: scale(1.5);
 }
 
 .topShop {
@@ -226,6 +310,13 @@ a {
   justify-content: center;
   pointer-events: none;
   z-index: 4;
+}
+
+.heroBody {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: center;
+  height: 100%;
 }
 
 .heroCenterFrame {
@@ -355,6 +446,91 @@ a {
     height: auto;
   }
 
+  .heroNav {
+    padding: 1rem;
+  }
+
+  .brandImg {
+    transform: scale(1.5);
+  }
+
+  .heroTopControls {
+    gap: 0.75rem;
+  }
+
+  .heroTopControls .navLink {
+    display: none;
+  }
+
+  .menuToggle {
+    display: flex;
+  }
+
+  .heroBody {
+    display: block;
+    padding-top: 5rem;
+  }
+
+  .heroSideNav,
+  .heroRightSeason {
+    display: none;
+  }
+
+  .heroFooter {
+    position: relative;
+    right: auto;
+    bottom: auto;
+    padding: 2rem 1.25rem 1rem;
+    align-items: flex-start;
+  }
+
+  .heroFooter nav {
+    align-items: flex-start;
+    gap: 0.5rem;
+    margin-top: 1rem;
+  }
+
+  .mobileMenuOverlay {
+    position: fixed;
+    inset: 0;
+    background: #ffffff;
+    z-index: 20;
+    padding: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+  }
+
+  .mobileMenuClose {
+    background: none;
+    border: 0;
+    color: #050505;
+    font-size: 2rem;
+    font-weight: 700;
+    cursor: pointer;
+    align-self: flex-start;
+  }
+
+  .mobileMenuItems {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    margin-top: 2rem;
+  }
+
+  .mobileMenuItems button {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    background: none;
+    border: 0;
+    color: #050505;
+    font-size: 1rem;
+    text-align: left;
+    cursor: pointer;
+    padding: 0;
+  }
+
   .productItem {
     bottom: 22%;
     width: clamp(82px, 30vw, 124px);
@@ -386,16 +562,24 @@ a {
   gap: 0.75rem;
 }
 
+.footerLink,
 .heroFooter a {
   color: #050505;
+  background: none;
+  border: 0;
   text-decoration: none;
-  font-size: 0.92rem;
+  font-size: 9pt;
   letter-spacing: 0.01em;
+  cursor: pointer;
+  position: relative;
+  padding: 0;
 }
 
-.heroFooter a:hover,
-.heroFooter a:focus-visible {
-  text-decoration: underline;
+.footerLink:hover::after,
+.heroFooter a:hover::after,
+.footerLink:focus-visible::after,
+.heroFooter a:focus-visible::after {
+  transform: scaleX(1);
 }
 
 @media (prefers-reduced-motion: reduce) {
