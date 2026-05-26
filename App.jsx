@@ -41,7 +41,7 @@ function Hero({ onNavigate, menuOpen, setMenuOpen }) {
         </a>
 
         <div className="heroTopControls">
-          <button className="navLink navLink--top" type="button" onClick={() => onNavigate('hero')}>
+          <button className="navLink navLink--top" type="button" onClick={() => onNavigate('shop')}>
             Shop
           </button>
           <button className="cartButton" type="button" aria-label="Cart with zero items">
@@ -67,7 +67,7 @@ function Hero({ onNavigate, menuOpen, setMenuOpen }) {
           </nav>
         </aside>
 
-        <div className="heroCenter" aria-hidden="true">
+        <div className="heroCenter" aria-hidden="true" onClick={() => onNavigate('shop')}>
           <div className="heroCenterFrame">
             <img src="/model.jpg" alt="Kilimani model" />
           </div>
@@ -184,6 +184,87 @@ function ShippingPage({ onNavigate }) {
         <p>All items must be returned in their original condition with all tags attached. Original packaging, boxes, and dust bags must also be included with the return. If these conditions are not met, the item will not be eligible for a refund or exchange. Kilimani reserves the right to refuse any washed, worn, or altered items.</p>
         <p>Please note that the buyer is responsible for all return shipping costs. Kilimani is not responsible for return shipping expenses or duty reimbursement on international purchases.</p>
       </div>
+    </main>
+  );
+}
+
+function ShopPage({ onNavigate, menuOpen, setMenuOpen }) {
+  return (
+    <main className="productPage">
+      <header className="productNav" aria-label="Shop navigation">
+        <button className="backButton" type="button" onClick={() => onNavigate('hero')}>
+          Back
+        </button>
+        <a
+          href="/"
+          className="productBrand"
+          onClick={(event) => {
+            event.preventDefault();
+            onNavigate('hero');
+          }}
+        >
+          kilimani
+        </a>
+        <div>
+          <button className="navLink navLink--top" type="button" onClick={() => onNavigate('shop')}>
+            Shop
+          </button>
+          <button className="cartButton" type="button" aria-label="Cart">
+            Cart
+          </button>
+          <button className="menuToggle" type="button" aria-label="Open menu" onClick={() => setMenuOpen(true)}>
+            <span />
+            <span />
+            <span />
+          </button>
+        </div>
+      </header>
+
+      <section className="shopGrid" aria-label="Shop products">
+        <article className="shopItem">
+          <img src="/ash.jacket.JPG" alt="Mombasa Chore Jacket - Ash" />
+          <h3>Mombasa Chore Jacket - Ash</h3>
+          <p className="price">$128.00 USD</p>
+        </article>
+
+        <article className="shopItem">
+          <img src="/oil.jacket.JPG" alt="Mombasa Chore Jacket - Oil" />
+          <h3>Mombasa Chore Jacket - Oil</h3>
+          <p className="price">$128.00 USD</p>
+        </article>
+      </section>
+
+      <footer className="heroFooter">
+        <nav aria-label="Site legal and social links">
+          <button className="footerLink" type="button" onClick={() => onNavigate('terms')}>
+            Terms & Conditions
+          </button>
+          <button className="footerLink" type="button" onClick={() => onNavigate('shipping')}>
+            Shipping & Returns
+          </button>
+          <a href="https://www.instagram.com/kilimanistudios?igsh=MXhnbHVyaXEzNXRvcw==" target="_blank" rel="noreferrer">
+            Social
+          </a>
+        </nav>
+      </footer>
+
+      {menuOpen && (
+        <div className="mobileMenuOverlay" role="dialog" aria-modal="true">
+          <button className="mobileMenuClose" type="button" onClick={() => setMenuOpen(false)} aria-label="Close menu">
+            ×
+          </button>
+          <div className="mobileMenuItems">
+            <button type="button" onClick={() => onNavigate('hero')}>
+              Gallery
+              <span aria-hidden="true">›</span>
+            </button>
+            <button type="button" onClick={() => onNavigate('hero')}>
+              About
+              <span aria-hidden="true">›</span>
+            </button>
+          </div>
+        </div>
+      )}
     </main>
   );
 }
@@ -365,6 +446,10 @@ export default function App() {
 
   if (view === 'shipping') {
     return <ShippingPage onNavigate={onNavigate} />;
+  }
+
+  if (view === 'shop') {
+    return <ShopPage onNavigate={onNavigate} menuOpen={menuOpen} setMenuOpen={setMenuOpen} />;
   }
 
   if (view === 'product' && selectedProductId) {

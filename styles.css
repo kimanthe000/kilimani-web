@@ -682,6 +682,43 @@ a {
   background: #ffffff;
 }
 
+/* Shop grid */
+.shopGrid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 2rem;
+  max-width: 84rem;
+  margin: 2.5rem auto;
+  padding: 0 1.25rem;
+}
+
+.shopItem {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.shopItem img {
+  width: 100%;
+  max-width: 36rem;
+  height: auto;
+  object-fit: cover;
+  display: block;
+}
+
+.shopItem h3 {
+  margin: 0;
+  font-size: 1rem;
+  font-weight: 700;
+  text-align: center;
+}
+
+.shopItem .price {
+  margin: 0.25rem 0 0;
+  font-weight: 700;
+}
+
 /* Content pages (Terms & Shipping) */
 .contentPage {
   min-height: 100vh;
