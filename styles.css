@@ -26,6 +26,11 @@ body,
   font-size: 9pt;
 }
 
+/* Prevent scrolling when mobile menu overlay is open */
+body:has(.mobileMenuOverlay) {
+  overflow: hidden;
+}
+
 * {
   box-sizing: border-box;
 }
