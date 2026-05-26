@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { useMemo, useState, useEffect } from 'react';
 
 const products = {
   oil: {
@@ -334,6 +334,15 @@ export default function App() {
   const [selectedProductId, setSelectedProductId] = useState(null);
   const [view, setView] = useState('hero');
   const [menuOpen, setMenuOpen] = useState(false);
+
+  useEffect(() => {
+    document.body.style.overflow = menuOpen ? 'hidden' : '';
+    document.body.style.touchAction = menuOpen ? 'none' : '';
+    return () => {
+      document.body.style.overflow = '';
+      document.body.style.touchAction = '';
+    };
+  }, [menuOpen]);
 
   const onNavigate = (nextView) => {
     setMenuOpen(false);
