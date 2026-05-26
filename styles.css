@@ -159,7 +159,7 @@ a {
 }
 
 .heroTopControls .navLink::after,
-.heroSideNav .sideNav a::after,
+.heroSideNav .sideNav .navLink::after,
 .heroRightSeason .navLink::after,
 .footerLink::after {
   content: '';
@@ -175,7 +175,7 @@ a {
 }
 
 .heroTopControls .navLink:hover::after,
-.heroSideNav .sideNav a:hover::after,
+.heroSideNav .sideNav .navLink:hover::after,
 .heroRightSeason .navLink:hover::after,
 .footerLink:hover::after {
   transform: scaleX(1);
@@ -611,6 +611,29 @@ a {
   min-height: 100vh;
   color: #17110d;
   background: #ffffff;
+}
+
+/* Content pages (Terms & Shipping) */
+.contentPage {
+  min-height: 100vh;
+  background: #ffffff;
+  color: #050505;
+  font-size: 9pt;
+}
+
+.contentPageInner {
+  max-width: 64rem;
+  margin: 3.25rem auto;
+  padding: 0 1.25rem;
+}
+
+.pageBackButton {
+  background: none;
+  border: 0;
+  color: #050505;
+  font-size: 0.95rem;
+  cursor: pointer;
+  margin-bottom: 1rem;
 }
 
 .productNav {

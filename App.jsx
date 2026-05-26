@@ -56,11 +56,8 @@ function Hero({ onNavigate, menuOpen, setMenuOpen }) {
       </header>
 
       <div className="heroBody">
-        <aside className="heroLeftNav">
+        <aside className="heroSideNav">
           <nav className="sideNav" aria-label="Primary navigation">
-            <button className="navLink" type="button" onClick={() => onNavigate('hero')}>
-              Shop
-            </button>
             <button className="navLink" type="button" onClick={() => onNavigate('hero')}>
               Gallery
             </button>
