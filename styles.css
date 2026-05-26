@@ -680,6 +680,25 @@ a {
   min-height: 100vh;
   color: #17110d;
   background: #ffffff;
+  display: flex;
+  flex-direction: column;
+}
+
+.productPage .heroFooter {
+  position: relative;
+  right: auto;
+  bottom: auto;
+  margin-top: auto;
+  padding: 2rem 1.25rem;
+  background: #ffffff;
+  border-top: 1px solid rgba(0, 0, 0, 0.06);
+}
+
+.productPage .heroFooter nav {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 0.75rem;
 }
 
 /* Shop grid */
@@ -719,6 +738,58 @@ a {
   font-weight: 700;
 }
 
+@media (max-width: 720px) {
+  .shopGrid {
+    grid-template-columns: 1fr;
+    gap: 1.25rem;
+    margin: 1.5rem 0;
+    padding: 0 0.75rem;
+  }
+
+  .productNav {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1rem;
+  }
+
+  .productBrand {
+    flex: 1;
+  }
+
+  .productBrand img {
+    height: 36px;
+  }
+
+  .shopHeaderControls {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+  }
+
+  .cartButton {
+    display: inline-flex;
+    padding: 0.5rem 0.75rem;
+    font-size: 0.9rem;
+  }
+
+  .menuToggle {
+    display: flex;
+  }
+}
+
+@media (max-width: 720px) and (orientation: landscape) {
+  .productPage {
+    min-height: auto;
+  }
+
+  .shopGrid {
+    min-height: auto;
+    margin-bottom: 5rem;
+  }
+}
+
+
 /* Content pages (Terms & Shipping) */
 .contentPage {
   min-height: 100vh;
@@ -755,6 +826,17 @@ a {
   font-weight: 700;
   line-height: 1;
   text-decoration: none;
+}
+
+.productBrand img {
+  height: 40px;
+  width: auto;
+}
+
+.shopHeaderControls {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
 }
 
 .backButton,

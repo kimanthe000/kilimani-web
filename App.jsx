@@ -192,9 +192,6 @@ function ShopPage({ onNavigate, menuOpen, setMenuOpen }) {
   return (
     <main className="productPage">
       <header className="productNav" aria-label="Shop navigation">
-        <button className="backButton" type="button" onClick={() => onNavigate('hero')}>
-          Back
-        </button>
         <a
           href="/"
           className="productBrand"
@@ -203,14 +200,11 @@ function ShopPage({ onNavigate, menuOpen, setMenuOpen }) {
             onNavigate('hero');
           }}
         >
-          kilimani
+          <img src="/kilimani-logo-blk.png" alt="Kilimani" className="brandImg" />
         </a>
-        <div>
-          <button className="navLink navLink--top" type="button" onClick={() => onNavigate('shop')}>
-            Shop
-          </button>
-          <button className="cartButton" type="button" aria-label="Cart">
-            Cart
+        <div className="shopHeaderControls">
+          <button className="cartButton" type="button" aria-label="Cart with zero items">
+            Cart <span>0</span>
           </button>
           <button className="menuToggle" type="button" aria-label="Open menu" onClick={() => setMenuOpen(true)}>
             <span />
