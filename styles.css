@@ -244,7 +244,7 @@ a {
 .heroSideNav .sideNav {
   display: flex;
   flex-direction: column;
-  gap: 0.25rem;
+  gap: 1rem;
 }
 
 .brand img {
@@ -436,11 +436,26 @@ a {
 
 @media (max-width: 720px) {
   .hero {
-    min-height: 100vh;
+    min-height: auto;
+    height: auto;
+    overflow: visible;
+    padding-bottom: 2rem;
+  }
+
+  .heroCenter {
+    position: static;
+    inset: auto;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    pointer-events: auto;
+    margin: 0 auto;
+    padding-bottom: 1rem;
   }
 
   .heroCenterFrame {
     width: 100vw;
+    max-width: 100%;
     aspect-ratio: auto;
     border-radius: 0;
     height: auto;
@@ -462,6 +477,10 @@ a {
     display: none;
   }
 
+  .heroTopControls .navLink.navLink--top {
+    display: inline-flex;
+  }
+
   .menuToggle {
     display: flex;
   }
@@ -469,6 +488,7 @@ a {
   .heroBody {
     display: block;
     padding-top: 5rem;
+    height: auto;
   }
 
   .heroSideNav,
@@ -480,6 +500,7 @@ a {
     position: relative;
     right: auto;
     bottom: auto;
+    margin-top: 1rem;
     padding: 2rem 1.25rem 1rem;
     align-items: flex-start;
   }
