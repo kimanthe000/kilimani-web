@@ -58,10 +58,10 @@ function Hero({ onNavigate, menuOpen, setMenuOpen, cartCount }) {
       <div className="heroBody">
         <aside className="heroSideNav">
           <nav className="sideNav" aria-label="Primary navigation">
-            <button className="navLink" type="button" onClick={() => onNavigate('hero')}>
+            <button className="navLink" type="button" onClick={() => onNavigate('gallery')}>
               Gallery
             </button>
-            <button className="navLink" type="button" onClick={() => onNavigate('hero')}>
+            <button className="navLink" type="button" onClick={() => onNavigate('about')}>
               About
             </button>
           </nav>
@@ -94,11 +94,11 @@ function Hero({ onNavigate, menuOpen, setMenuOpen, cartCount }) {
             ×
           </button>
           <div className="mobileMenuItems">
-            <button type="button" onClick={() => onNavigate('hero')}>
+            <button type="button" onClick={() => onNavigate('gallery')}>
               Gallery
               <span aria-hidden="true">›</span>
             </button>
-            <button type="button" onClick={() => onNavigate('hero')}>
+            <button type="button" onClick={() => onNavigate('about')}>
               About
               <span aria-hidden="true">›</span>
             </button>
@@ -182,6 +182,42 @@ function ShippingPage({ onNavigate }) {
   );
 }
 
+function GalleryPage({ onNavigate }) {
+  const galleryImages = ['/g1.JPG', '/g2.jpg', '/g3.jpg', '/g4.jpg', '/g5.JPG', '/g6.JPG'];
+
+  return (
+    <main className="galleryPage">
+      <button className="galleryBack" type="button" onClick={() => onNavigate('hero')}>
+        ← Back
+      </button>
+      <section className="galleryStack" aria-label="Gallery images">
+        {galleryImages.map((src, index) => (
+          <img key={src} src={src} alt={`Gallery image g${index + 1}`} className="galleryStackImage" />
+        ))}
+      </section>
+    </main>
+  );
+}
+
+
+function AboutPage({ onNavigate }) {
+  return (
+    <main className="aboutPage">
+      <button className="aboutBack" type="button" onClick={() => onNavigate('hero')}>
+        ← Back
+      </button>
+      <section className="aboutContent">
+        <p>
+          Kilimani exists to carry the memory of ancestral origin through what is worn. Every garment is symbolic of inheritance, resistance, and remembrance.
+        </p>
+        <p>
+          Our clothing is for those who move against erasure, who understand culture not as ornament but as foundation. Our differences are not divisions, but the force that binds us, preserves us, and makes transformation possible.
+        </p>
+      </section>
+    </main>
+  );
+}
+
 function ShopPage({ onNavigate, menuOpen, setMenuOpen, openProduct, cartCount }) {
   return (
     <main className="productPage">
@@ -242,11 +278,11 @@ function ShopPage({ onNavigate, menuOpen, setMenuOpen, openProduct, cartCount })
             ×
           </button>
           <div className="mobileMenuItems">
-            <button type="button" onClick={() => onNavigate('hero')}>
+            <button type="button" onClick={() => onNavigate('gallery')}>
               Gallery
               <span aria-hidden="true">›</span>
             </button>
-            <button type="button" onClick={() => onNavigate('hero')}>
+            <button type="button" onClick={() => onNavigate('about')}>
               About
               <span aria-hidden="true">›</span>
             </button>
@@ -526,6 +562,14 @@ export default function App() {
 
   if (view === 'shipping') {
     return <ShippingPage onNavigate={onNavigate} />;
+  }
+
+  if (view === 'gallery') {
+    return <GalleryPage onNavigate={onNavigate} />;
+  }
+
+  if (view === 'about') {
+    return <AboutPage onNavigate={onNavigate} />;
   }
 
   if (view === 'shop') {
