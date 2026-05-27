@@ -72,12 +72,6 @@ function Hero({ onNavigate, menuOpen, setMenuOpen, cartCount }) {
             <img src="/model.jpg" alt="Kilimani model" />
           </div>
         </div>
-
-        <aside className="heroRightSeason">
-          <button className="navLink navLink--season" type="button" onClick={() => onNavigate('hero')}>
-            Spring/Summer 26'
-          </button>
-        </aside>
       </div>
 
       <footer className="heroFooter">
@@ -269,6 +263,11 @@ function ProductPage({ initialProductId, onBack, onNavigate, stocks, onAddToCart
   const [cartState, setCartState] = useState('idle');
   const [showDescription, setShowDescription] = useState(false);
   const [showSizeGuide, setShowSizeGuide] = useState(false);
+  const [pageMounted, setPageMounted] = useState(false);
+
+  useEffect(() => {
+    requestAnimationFrame(() => setPageMounted(true));
+  }, []);
 
   useEffect(() => {
     setSelectedSize('M');
@@ -308,7 +307,7 @@ function ProductPage({ initialProductId, onBack, onNavigate, stocks, onAddToCart
   };
 
   return (
-    <main className="productPage productDetailPage">
+    <main className={`productPage productDetailPage ${pageMounted ? 'isVisible' : ''}`}>
       <header className="productNav" aria-label="Product navigation">
         <button className="backButton" type="button" onClick={onBack}>
           ← Back
@@ -372,21 +371,19 @@ function ProductPage({ initialProductId, onBack, onNavigate, stocks, onAddToCart
               <span>Description</span>
               <span>{showDescription ? '−' : '+'}</span>
             </button>
-            {showDescription && (
-              <div className="accordionContent">
-                <p>
-                  Inspired by the 1950s–60s Kenyan Mau Mau rebellion fighters and the workwear worn during colonial resistance,
-                  the jacket is constructed from 10 oz 100% cotton duck canvas in ash and oil colorways.
-                </p>
-                <p>
-                  Features four reinforced patch pockets secured with two-prong donut buttons and button-down flaps, with every
-                  major seam double-stitched for rugged longevity. A brushed polyester lining provides a smoother, more comfortable
-                  feel when worn over a tee.
-                </p>
-                <p></p>
-                <p>Male model is 5'8 and female model is 5'5, both wearing size Small.</p>
-              </div>
-            )}
+            <div className={`accordionContent ${showDescription ? 'isOpen' : ''}`} aria-hidden={!showDescription}>
+              <p>
+                Inspired by the 1950s–60s Kenyan Mau Mau rebellion fighters and the workwear worn during colonial resistance,
+                the jacket is constructed from 10 oz 100% cotton duck canvas in ash and oil colorways.
+              </p>
+              <p>
+                Features four reinforced patch pockets secured with two-prong donut buttons and button-down flaps, with every
+                major seam double-stitched for rugged longevity. A polyester lining provides a smoother, more comfortable
+                feel when worn over a tee.
+              </p>
+              <p></p>
+              <p>Male model is 5'8 and female model is 5'5, both wearing size Small.</p>
+            </div>
 
             <button
               className="accordionToggle"
@@ -397,9 +394,8 @@ function ProductPage({ initialProductId, onBack, onNavigate, stocks, onAddToCart
               <span>Size Guide</span>
               <span>{showSizeGuide ? '−' : '+'}</span>
             </button>
-            {showSizeGuide && (
-              <div className="accordionContent sizeGuideContent">
-                <table>
+            <div className={`accordionContent sizeGuideContent ${showSizeGuide ? 'isOpen' : ''}`} aria-hidden={!showSizeGuide}>
+              <table>
                   <thead>
                     <tr>
                       <th>Size</th>
@@ -447,7 +443,6 @@ function ProductPage({ initialProductId, onBack, onNavigate, stocks, onAddToCart
                 </table>
                 <p className="sizeUnit">inch/cm</p>
               </div>
-            )}
           </div>
         </div>
 

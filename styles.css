@@ -718,6 +718,17 @@ a {
   padding: 0 1.25rem 2.5rem;
 }
 
+.productPage.productDetailPage {
+  opacity: 0;
+  transform: translateY(18px);
+  transition: opacity 320ms ease, transform 320ms ease;
+}
+
+.productPage.productDetailPage.isVisible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
 .productPage.productDetailPage .productDetails {
   display: flex;
   flex-direction: column;
@@ -794,9 +805,19 @@ a {
 }
 
 .productPage.productDetailPage .accordionContent {
-  padding-top: 0.75rem;
+  max-height: 0;
+  opacity: 0;
+  overflow: hidden;
+  padding-top: 0;
   color: #1a1a1a;
   line-height: 1.75;
+  transition: max-height 320ms ease, opacity 320ms ease, padding-top 320ms ease;
+}
+
+.productPage.productDetailPage .accordionContent.isOpen {
+  max-height: 1200px;
+  opacity: 1;
+  padding-top: 0.75rem;
 }
 
 .productPage.productDetailPage .sizeGuideContent table {
