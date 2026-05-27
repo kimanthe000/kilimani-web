@@ -3,26 +3,28 @@ import { useMemo, useState, useEffect } from 'react';
 const products = {
   oil: {
     id: 'oil',
-    name: 'Kilimani Field Jacket',
+    name: 'Mombasa Chore Jacket',
     color: 'Oil',
     price: '$128.00 USD',
     images: ['/oil.jacket.JPG', '/oil.back.JPG', '/OILpp1.JPG', '/OILpp2.JPG'],
     swatch: '#242421',
+    stock: { XS: 5, S: 6, M: 16, L: 16, XL: 7 },
   },
   ash: {
     id: 'ash',
-    name: 'Kilimani Field Jacket',
+    name: 'Mombasa Chore Jacket',
     color: 'Ash',
     price: '$128.00 USD',
     images: ['/ash.jacket.JPG', '/ash.back.JPG', '/ASHpp1 (1).jpg', '/ASHpp2 (1).jpg'],
     swatch: '#8f8770',
+    stock: { XS: 5, S: 6, M: 16, L: 16, XL: 7 },
   },
 };
 
 const productItems = [products.oil, products.ash];
 const sizes = ['XS', 'S', 'M', 'L', 'XL'];
 
-function Hero({ onNavigate, menuOpen, setMenuOpen }) {
+function Hero({ onNavigate, menuOpen, setMenuOpen, cartCount }) {
   return (
     <section className="hero staticHero" aria-label="Kilimani landing hero">
       <header className="heroNav" aria-label="Primary navigation">
@@ -43,7 +45,7 @@ function Hero({ onNavigate, menuOpen, setMenuOpen }) {
             Shop
           </button>
           <button className="cartButton" type="button" aria-label="Cart with zero items">
-            Cart <span>0</span>
+            Cart <span>{cartCount}</span>
           </button>
           <button className="menuToggle" type="button" aria-label="Open menu" onClick={() => setMenuOpen(true)}>
             <span />
@@ -186,7 +188,7 @@ function ShippingPage({ onNavigate }) {
   );
 }
 
-function ShopPage({ onNavigate, menuOpen, setMenuOpen, openProduct }) {
+function ShopPage({ onNavigate, menuOpen, setMenuOpen, openProduct, cartCount }) {
   return (
     <main className="productPage">
       <header className="productNav" aria-label="Shop navigation">
@@ -202,7 +204,7 @@ function ShopPage({ onNavigate, menuOpen, setMenuOpen, openProduct }) {
         </a>
         <div className="shopHeaderControls">
           <button className="cartButton" type="button" aria-label="Cart with zero items">
-            Cart <span>0</span>
+            Cart <span>{cartCount}</span>
           </button>
           <button className="menuToggle" type="button" aria-label="Open menu" onClick={() => setMenuOpen(true)}>
             <span />
@@ -261,7 +263,7 @@ function ShopPage({ onNavigate, menuOpen, setMenuOpen, openProduct }) {
   );
 }
 
-function ProductPage({ initialProductId, onBack, onNavigate }) {
+function ProductPage({ initialProductId, onBack, onNavigate, stocks, onAddToCart, cartCount }) {
   const [selectedSize, setSelectedSize] = useState('M');
   const [quantity, setQuantity] = useState(1);
   const [cartState, setCartState] = useState('idle');
@@ -276,20 +278,33 @@ function ProductPage({ initialProductId, onBack, onNavigate }) {
     setShowSizeGuide(false);
   }, [initialProductId]);
 
+  // if the selected size becomes sold out, pick the first available size
+  useEffect(() => {
+    const avail = stocks && stocks[initialProductId] ? stocks[initialProductId][selectedSize] || 0 : 0;
+    if (avail > 0) return;
+    const first = sizes.find((s) => (stocks && stocks[initialProductId] ? (stocks[initialProductId][s] || 0) > 0 : false));
+    if (first) setSelectedSize(first);
+  }, [stocks, initialProductId, selectedSize]);
+
   const selectedProduct = products[initialProductId];
   const cartMessage = useMemo(() => {
-    if (cartState !== 'added') {
-      return 'Free shipping and returns on US orders.';
-    }
-
+    if (cartState !== 'added') return '';
     return `${quantity} ${selectedProduct.color} jacket${quantity > 1 ? 's' : ''} in ${selectedSize} added to cart.`;
   }, [cartState, quantity, selectedProduct.color, selectedSize]);
 
   const addToCart = () => {
+    const available = stocks && stocks[initialProductId] ? stocks[initialProductId][selectedSize] || 0 : 0;
+    if (available < quantity) {
+      setCartState('soldout');
+      return;
+    }
+
     setCartState('adding');
+    // call parent to decrement stock and increment cart count
+    onAddToCart(initialProductId, selectedSize, quantity);
     window.setTimeout(() => {
       setCartState('added');
-    }, 450);
+    }, 300);
   };
 
   return (
@@ -309,14 +324,13 @@ function ProductPage({ initialProductId, onBack, onNavigate }) {
           <img src="/kilimani-logo-blk.png" alt="Kilimani" className="brandImg" />
         </a>
         <button className="cartButton" type="button" aria-label="Cart">
-          Cart <span>0</span>
+          Cart <span>{cartCount}</span>
         </button>
       </header>
 
       <section className="productShell" aria-label={`${selectedProduct.color} Kilimani jacket`}>
         <div className="productDetails">
           <div className="productMeta">
-            <p className="productLabel">Outerwear / Field Jacket</p>
             <h1>{selectedProduct.name}</h1>
             <p className="productPrice">{selectedProduct.price}</p>
           </div>
@@ -330,11 +344,15 @@ function ProductPage({ initialProductId, onBack, onNavigate }) {
               value={selectedSize}
               onChange={(event) => setSelectedSize(event.target.value)}
             >
-              {sizes.map((size) => (
-                <option key={size} value={size}>
-                  {size}
-                </option>
-              ))}
+              {sizes.map((size) => {
+                const avail = stocks && stocks[initialProductId] ? stocks[initialProductId][size] || 0 : 0;
+                return (
+                  <option key={size} value={size} disabled={avail <= 0}>
+                    {size}
+                    {avail <= 0 ? ' — Sold out' : ''}
+                  </option>
+                );
+              })}
             </select>
 
             <button className="addButton" type="button" onClick={addToCart} disabled={cartState === 'adding'}>
@@ -365,6 +383,7 @@ function ProductPage({ initialProductId, onBack, onNavigate }) {
                   major seam double-stitched for rugged longevity. A brushed polyester lining provides a smoother, more comfortable
                   feel when worn over a tee.
                 </p>
+                <p></p>
                 <p>Male model is 5'8 and female model is 5'5, both wearing size Small.</p>
               </div>
             )}
@@ -426,6 +445,7 @@ function ProductPage({ initialProductId, onBack, onNavigate }) {
                     </tr>
                   </tbody>
                 </table>
+                <p className="sizeUnit">inch/cm</p>
               </div>
             )}
           </div>
@@ -461,6 +481,14 @@ export default function App() {
   const [selectedProductId, setSelectedProductId] = useState(null);
   const [view, setView] = useState('hero');
   const [menuOpen, setMenuOpen] = useState(false);
+  const [cartCount, setCartCount] = useState(0);
+  const [stocks, setStocks] = useState(() => {
+    const map = {};
+    Object.keys(products).forEach((pid) => {
+      map[pid] = { ...products[pid].stock };
+    });
+    return map;
+  });
 
   useEffect(() => {
     document.body.style.overflow = menuOpen ? 'hidden' : '';
@@ -486,6 +514,17 @@ export default function App() {
     setView('shop');
   };
 
+  const handleAddToCart = (productId, size, qty = 1) => {
+    setStocks((prev) => {
+      const available = prev[productId] && prev[productId][size] ? prev[productId][size] : 0;
+      if (available < qty) return prev;
+      const next = { ...prev, [productId]: { ...prev[productId], [size]: prev[productId][size] - qty } };
+      return next;
+    });
+
+    setCartCount((c) => c + qty);
+  };
+
   if (view === 'terms') {
     return <TermsPage onNavigate={onNavigate} />;
   }
@@ -495,12 +534,29 @@ export default function App() {
   }
 
   if (view === 'shop') {
-    return <ShopPage onNavigate={onNavigate} menuOpen={menuOpen} setMenuOpen={setMenuOpen} openProduct={openProduct} />;
+    return (
+      <ShopPage
+        onNavigate={onNavigate}
+        menuOpen={menuOpen}
+        setMenuOpen={setMenuOpen}
+        openProduct={openProduct}
+        cartCount={cartCount}
+      />
+    );
   }
 
   if (view === 'product' && selectedProductId) {
-    return <ProductPage initialProductId={selectedProductId} onBack={closeProduct} onNavigate={onNavigate} />;
+    return (
+      <ProductPage
+        initialProductId={selectedProductId}
+        onBack={closeProduct}
+        onNavigate={onNavigate}
+        stocks={stocks}
+        onAddToCart={handleAddToCart}
+        cartCount={cartCount}
+      />
+    );
   }
 
-  return <Hero onNavigate={onNavigate} menuOpen={menuOpen} setMenuOpen={setMenuOpen} />;
+  return <Hero onNavigate={onNavigate} menuOpen={menuOpen} setMenuOpen={setMenuOpen} cartCount={cartCount} />;
 }

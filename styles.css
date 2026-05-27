@@ -840,6 +840,16 @@ a {
 
   .productPage.productDetailPage .productGallery {
     max-height: none;
+    order: -1;
+    flex-direction: row;
+    overflow-x: auto;
+    gap: 0.75rem;
+    padding: 0 0.75rem 1rem;
+  }
+
+  .productPage.productDetailPage .productGallery .galleryImage {
+    min-width: 80vw;
+    flex: 0 0 80vw;
   }
 }
 
