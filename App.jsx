@@ -5,19 +5,17 @@ const products = {
     id: 'oil',
     name: 'Kilimani Field Jacket',
     color: 'Oil',
-    price: '$328',
-    src: '/oil.png',
+    price: '$128.00 USD',
+    images: ['/oil.jacket.JPG', '/oil.back.JPG', '/OILpp1.JPG', '/OILpp2.JPG'],
     swatch: '#242421',
-    side: 'left',
   },
   ash: {
     id: 'ash',
     name: 'Kilimani Field Jacket',
     color: 'Ash',
-    price: '$328',
-    src: '/ash.png',
+    price: '$128.00 USD',
+    images: ['/ash.jacket.JPG', '/ash.back.JPG', '/ASHpp1 (1).jpg', '/ASHpp2 (1).jpg'],
     swatch: '#8f8770',
-    side: 'right',
   },
 };
 
@@ -188,7 +186,7 @@ function ShippingPage({ onNavigate }) {
   );
 }
 
-function ShopPage({ onNavigate, menuOpen, setMenuOpen }) {
+function ShopPage({ onNavigate, menuOpen, setMenuOpen, openProduct }) {
   return (
     <main className="productPage">
       <header className="productNav" aria-label="Shop navigation">
@@ -215,17 +213,17 @@ function ShopPage({ onNavigate, menuOpen, setMenuOpen }) {
       </header>
 
       <section className="shopGrid" aria-label="Shop products">
-        <article className="shopItem">
+        <button className="shopItem" type="button" onClick={() => openProduct('ash')}>
           <img src="/ash.jacket.JPG" alt="Mombasa Chore Jacket - Ash" />
           <h3>Mombasa Chore Jacket - Ash</h3>
           <p className="price">$128.00 USD</p>
-        </article>
+        </button>
 
-        <article className="shopItem">
+        <button className="shopItem" type="button" onClick={() => openProduct('oil')}>
           <img src="/oil.jacket.JPG" alt="Mombasa Chore Jacket - Oil" />
           <h3>Mombasa Chore Jacket - Oil</h3>
           <p className="price">$128.00 USD</p>
-        </article>
+        </button>
       </section>
 
       <footer className="heroFooter">
@@ -263,13 +261,22 @@ function ShopPage({ onNavigate, menuOpen, setMenuOpen }) {
   );
 }
 
-function ProductPage({ initialProductId, onBack }) {
-  const [selectedProductId, setSelectedProductId] = useState(initialProductId);
+function ProductPage({ initialProductId, onBack, onNavigate }) {
   const [selectedSize, setSelectedSize] = useState('M');
   const [quantity, setQuantity] = useState(1);
   const [cartState, setCartState] = useState('idle');
+  const [showDescription, setShowDescription] = useState(false);
+  const [showSizeGuide, setShowSizeGuide] = useState(false);
 
-  const selectedProduct = products[selectedProductId];
+  useEffect(() => {
+    setSelectedSize('M');
+    setQuantity(1);
+    setCartState('idle');
+    setShowDescription(false);
+    setShowSizeGuide(false);
+  }, [initialProductId]);
+
+  const selectedProduct = products[initialProductId];
   const cartMessage = useMemo(() => {
     if (cartState !== 'added') {
       return 'Free shipping and returns on US orders.';
@@ -286,10 +293,10 @@ function ProductPage({ initialProductId, onBack }) {
   };
 
   return (
-    <main className="productPage">
+    <main className="productPage productDetailPage">
       <header className="productNav" aria-label="Product navigation">
         <button className="backButton" type="button" onClick={onBack}>
-          Back
+          ← Back
         </button>
         <a
           href="/"
@@ -299,108 +306,153 @@ function ProductPage({ initialProductId, onBack }) {
             onBack();
           }}
         >
-          kilimani
+          <img src="/kilimani-logo-blk.png" alt="Kilimani" className="brandImg" />
         </a>
         <button className="cartButton" type="button" aria-label="Cart">
-          Bag
+          Cart <span>0</span>
         </button>
       </header>
 
       <section className="productShell" aria-label={`${selectedProduct.color} Kilimani jacket`}>
-        <div className="productImagePanel">
-          <img src={selectedProduct.src} alt={`${selectedProduct.color} Kilimani Field Jacket`} />
+        <div className="productDetails">
+          <div className="productMeta">
+            <p className="productLabel">Outerwear / Field Jacket</p>
+            <h1>{selectedProduct.name}</h1>
+            <p className="productPrice">{selectedProduct.price}</p>
+          </div>
+
+          <div className="productForm">
+            <label className="productSelectLabel" htmlFor="size-select">
+              Size
+            </label>
+            <select
+              id="size-select"
+              value={selectedSize}
+              onChange={(event) => setSelectedSize(event.target.value)}
+            >
+              {sizes.map((size) => (
+                <option key={size} value={size}>
+                  {size}
+                </option>
+              ))}
+            </select>
+
+            <button className="addButton" type="button" onClick={addToCart} disabled={cartState === 'adding'}>
+              {cartState === 'adding' ? 'Adding...' : cartState === 'added' ? 'Added' : 'Add to cart'}
+            </button>
+
+            <p className="cartMessage" aria-live="polite">{cartMessage}</p>
+          </div>
+
+          <div className="productAccordion">
+            <button
+              className="accordionToggle"
+              type="button"
+              onClick={() => setShowDescription((value) => !value)}
+              aria-expanded={showDescription}
+            >
+              <span>Description</span>
+              <span>{showDescription ? '−' : '+'}</span>
+            </button>
+            {showDescription && (
+              <div className="accordionContent">
+                <p>
+                  Inspired by the 1950s–60s Kenyan Mau Mau rebellion fighters and the workwear worn during colonial resistance,
+                  the jacket is constructed from 10 oz 100% cotton duck canvas in ash and oil colorways.
+                </p>
+                <p>
+                  Features four reinforced patch pockets secured with two-prong donut buttons and button-down flaps, with every
+                  major seam double-stitched for rugged longevity. A brushed polyester lining provides a smoother, more comfortable
+                  feel when worn over a tee.
+                </p>
+                <p>Male model is 5'8 and female model is 5'5, both wearing size Small.</p>
+              </div>
+            )}
+
+            <button
+              className="accordionToggle"
+              type="button"
+              onClick={() => setShowSizeGuide((value) => !value)}
+              aria-expanded={showSizeGuide}
+            >
+              <span>Size Guide</span>
+              <span>{showSizeGuide ? '−' : '+'}</span>
+            </button>
+            {showSizeGuide && (
+              <div className="accordionContent sizeGuideContent">
+                <table>
+                  <thead>
+                    <tr>
+                      <th>Size</th>
+                      <th>XS</th>
+                      <th>S</th>
+                      <th>M</th>
+                      <th>L</th>
+                      <th>XL</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <th>Shoulder</th>
+                      <td>18.5/47</td>
+                      <td>19.3/49</td>
+                      <td>20.1/51</td>
+                      <td>20.9/53</td>
+                      <td>21.7/55</td>
+                    </tr>
+                    <tr>
+                      <th>Sleeve</th>
+                      <td>21.1/53.5</td>
+                      <td>21.7/55</td>
+                      <td>22.2/56.5</td>
+                      <td>22.8/58</td>
+                      <td>23.4/59.5</td>
+                    </tr>
+                    <tr>
+                      <th>Length</th>
+                      <td>23.4/59.5</td>
+                      <td>24.2/61.5</td>
+                      <td>25.0/63.5</td>
+                      <td>25.8/65.5</td>
+                      <td>26.6/67.5</td>
+                    </tr>
+                    <tr>
+                      <th>Chest</th>
+                      <td>22.0/56</td>
+                      <td>23.0/58.5</td>
+                      <td>24.0/61</td>
+                      <td>25.0/63.5</td>
+                      <td>26.0/66</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            )}
+          </div>
         </div>
 
-        <div className="purchasePanel">
-          <p className="productEyebrow">Outerwear / Field Jacket</p>
-          <div className="productHeading">
-            <h1>{selectedProduct.name}</h1>
-            <p>{selectedProduct.price}</p>
-          </div>
-
-          <p className="productDescription">
-            Weather-ready cotton canvas with a structured collar, utility pockets, and a relaxed layer-friendly fit.
-          </p>
-
-          <fieldset className="optionGroup">
-            <legend>
-              Color <span>{selectedProduct.color}</span>
-            </legend>
-            <div className="swatchGrid">
-              {productItems.map((product) => (
-                <button
-                  key={product.id}
-                  className={`swatch ${product.id === selectedProductId ? 'isSelected' : ''}`}
-                  type="button"
-                  aria-label={`Select ${product.color}`}
-                  aria-pressed={product.id === selectedProductId}
-                  onClick={() => {
-                    setSelectedProductId(product.id);
-                    setCartState('idle');
-                  }}
-                >
-                  <span style={{ backgroundColor: product.swatch }} />
-                  {product.color}
-                </button>
-              ))}
+        <div className="productGallery">
+          {selectedProduct.images.map((src, index) => (
+            <div key={`${selectedProduct.id}-${index}`} className="galleryImage">
+              <img src={src} alt={`${selectedProduct.color} jacket view ${index + 1}`} />
             </div>
-          </fieldset>
-
-          <fieldset className="optionGroup">
-            <legend>
-              Size <button type="button">Size guide</button>
-            </legend>
-            <div className="sizeGrid">
-              {sizes.map((size) => (
-                <button
-                  key={size}
-                  className={size === selectedSize ? 'isSelected' : ''}
-                  type="button"
-                  aria-pressed={size === selectedSize}
-                  onClick={() => {
-                    setSelectedSize(size);
-                    setCartState('idle');
-                  }}
-                >
-                  {size}
-                </button>
-              ))}
-            </div>
-          </fieldset>
-
-          <div className="quantityRow">
-            <span>Quantity</span>
-            <div className="quantityControl" aria-label="Quantity selector">
-              <button type="button" onClick={() => setQuantity((value) => Math.max(1, value - 1))}>
-                -
-              </button>
-              <output aria-live="polite">{quantity}</output>
-              <button type="button" onClick={() => setQuantity((value) => value + 1)}>
-                +
-              </button>
-            </div>
-          </div>
-
-          <button className="addButton" type="button" onClick={addToCart} disabled={cartState === 'adding'}>
-            {cartState === 'adding' ? 'Adding...' : cartState === 'added' ? 'Added' : 'Add to cart'}
-          </button>
-
-          <button className="buyButton" type="button">
-            Buy it now
-          </button>
-
-          <p className="cartMessage" aria-live="polite">{cartMessage}</p>
-
-          <div className="productNotes">
-            <p>Details</p>
-            <ul>
-              <li>Midweight brushed cotton canvas</li>
-              <li>Four-pocket front with concealed interior pocket</li>
-              <li>Ships in 1-2 business days</li>
-            </ul>
-          </div>
+          ))}
         </div>
       </section>
+
+      <footer className="heroFooter">
+        <nav aria-label="Site legal and social links">
+          <button className="footerLink" type="button" onClick={() => onNavigate('terms')}>
+            Terms & Conditions
+          </button>
+          <button className="footerLink" type="button" onClick={() => onNavigate('shipping')}>
+            Shipping & Returns
+          </button>
+          <a href="https://www.instagram.com/kilimanistudios?igsh=MXhnbHVyaXEzNXRvcw==" target="_blank" rel="noreferrer">
+            Social
+          </a>
+        </nav>
+      </footer>
     </main>
   );
 }
@@ -431,7 +483,7 @@ export default function App() {
 
   const closeProduct = () => {
     setSelectedProductId(null);
-    setView('hero');
+    setView('shop');
   };
 
   if (view === 'terms') {
@@ -443,11 +495,11 @@ export default function App() {
   }
 
   if (view === 'shop') {
-    return <ShopPage onNavigate={onNavigate} menuOpen={menuOpen} setMenuOpen={setMenuOpen} />;
+    return <ShopPage onNavigate={onNavigate} menuOpen={menuOpen} setMenuOpen={setMenuOpen} openProduct={openProduct} />;
   }
 
   if (view === 'product' && selectedProductId) {
-    return <ProductPage initialProductId={selectedProductId} onBack={closeProduct} />;
+    return <ProductPage initialProductId={selectedProductId} onBack={closeProduct} onNavigate={onNavigate} />;
   }
 
   return <Hero onNavigate={onNavigate} menuOpen={menuOpen} setMenuOpen={setMenuOpen} />;
