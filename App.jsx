@@ -248,12 +248,14 @@ function ShopPage({ onNavigate, menuOpen, setMenuOpen, openProduct, cartCount })
         <button className="shopItem" type="button" onClick={() => openProduct('ash')}>
           <img src="/ash.jacket.JPG" alt="Mombasa Chore Jacket - Ash" />
           <h3>Mombasa Chore Jacket - Ash</h3>
+          <p className="productPreorderSubtext">Preorder — Ships in 6–8 weeks</p>
           <p className="price">$128.00 USD</p>
         </button>
 
         <button className="shopItem" type="button" onClick={() => openProduct('oil')}>
           <img src="/oil.jacket.JPG" alt="Mombasa Chore Jacket - Oil" />
           <h3>Mombasa Chore Jacket - Oil</h3>
+          <p className="productPreorderSubtext">Preorder — Ships in 6–8 weeks</p>
           <p className="price">$128.00 USD</p>
         </button>
       </section>
