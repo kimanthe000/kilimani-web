@@ -367,7 +367,7 @@ function ProductPage({ initialProductId, onBack, onNavigate, stocks, onAddToCart
         <div className="productDetails">
           <div className="productMeta">
             <h1>{selectedProduct.name}</h1>
-            <p className="productPreorder">Preorder — Ships in 6 weeks</p>
+            <p className="productPreorder">Preorder — Ships in 6–8 weeks</p>
             <p className="productPrice">{selectedProduct.price}</p>
           </div>
 
