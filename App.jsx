@@ -1,3 +1,4 @@
+import { createShopifyCheckout } from './shopify';
 import { useMemo, useState, useEffect } from 'react';
 
 const products = {
@@ -23,8 +24,24 @@ const products = {
 
 const productItems = [products.oil, products.ash];
 const sizes = ['XS', 'S', 'M', 'L', 'XL'];
+const SHOPIFY_VARIANT_IDS = {
+  ash: {
+    XS: 'gid://shopify/ProductVariant/51651887694114',
+    S:  'gid://shopify/ProductVariant/51651887726882',
+    M:  'gid://shopify/ProductVariant/51651887759650',
+    L:  'gid://shopify/ProductVariant/51651887792418',
+    XL: 'gid://shopify/ProductVariant/51651887825186',
+  },
+  oil: {
+    XS: 'gid://shopify/ProductVariant/51651886317858',
+    S:  'gid://shopify/ProductVariant/51651886350626',
+    M:  'gid://shopify/ProductVariant/51651886383394',
+    L:  'gid://shopify/ProductVariant/51651886416162',
+    XL: 'gid://shopify/ProductVariant/51651886448930',
+  },
+};
 
-function Hero({ onNavigate, menuOpen, setMenuOpen, cartCount }) {
+function Hero({ onNavigate, menuOpen, setMenuOpen, cartCount, onCheckout }) {
   return (
     <section className="hero staticHero" aria-label="Kilimani landing hero">
       <header className="heroNav" aria-label="Primary navigation">
@@ -44,7 +61,7 @@ function Hero({ onNavigate, menuOpen, setMenuOpen, cartCount }) {
           <button className="navLink navLink--top" type="button" onClick={() => onNavigate('shop')}>
             Shop
           </button>
-          <button className="cartButton" type="button" aria-label="Cart with zero items">
+          <button className="cartButton" type="button" onClick={onCheckout} aria-label="Cart">
             Cart <span>{cartCount}</span>
           </button>
           <button className="menuToggle" type="button" aria-label="Open menu" onClick={() => setMenuOpen(true)}>
@@ -218,7 +235,7 @@ function AboutPage({ onNavigate }) {
   );
 }
 
-function ShopPage({ onNavigate, menuOpen, setMenuOpen, openProduct, cartCount }) {
+function ShopPage({ onNavigate, menuOpen, setMenuOpen, openProduct, cartCount, onCheckout }) {
   return (
     <main className="productPage">
       <header className="productNav" aria-label="Shop navigation">
@@ -233,7 +250,7 @@ function ShopPage({ onNavigate, menuOpen, setMenuOpen, openProduct, cartCount })
           <img src="/kilimani-logo-blk.png" alt="Kilimani" className="brandImg" />
         </a>
         <div className="shopHeaderControls">
-          <button className="cartButton" type="button" aria-label="Cart with zero items">
+          <button className="cartButton" type="button" onClick={onCheckout} aria-label="Cart">
             Cart <span>{cartCount}</span>
           </button>
           <button className="menuToggle" type="button" aria-label="Open menu" onClick={() => setMenuOpen(true)}>
@@ -295,7 +312,7 @@ function ShopPage({ onNavigate, menuOpen, setMenuOpen, openProduct, cartCount })
   );
 }
 
-function ProductPage({ initialProductId, onBack, onNavigate, stocks, onAddToCart, cartCount }) {
+function ProductPage({ initialProductId, onBack, onNavigate, stocks, onAddToCart, cartCount, onCheckout }) {
   const [selectedSize, setSelectedSize] = useState('M');
   const [quantity, setQuantity] = useState(1);
   const [cartState, setCartState] = useState('idle');
@@ -360,7 +377,7 @@ function ProductPage({ initialProductId, onBack, onNavigate, stocks, onAddToCart
         >
           <img src="/kilimani-logo-blk.png" alt="Kilimani" className="brandImg" />
         </a>
-        <button className="cartButton" type="button" aria-label="Cart">
+        <button className="cartButton" type="button" onClick={onCheckout} aria-label="Cart">
           Cart <span>{cartCount}</span>
         </button>
       </header>
@@ -548,16 +565,34 @@ export default function App() {
     setView('shop');
   };
 
+  const [cartItems, setCartItems] = useState([]);
+
   const handleAddToCart = (productId, size, qty = 1) => {
     setStocks((prev) => {
       const available = prev[productId] && prev[productId][size] ? prev[productId][size] : 0;
       if (available < qty) return prev;
-      const next = { ...prev, [productId]: { ...prev[productId], [size]: prev[productId][size] - qty } };
-      return next;
+      return { ...prev, [productId]: { ...prev[productId], [size]: prev[productId][size] - qty } };
     });
-
     setCartCount((c) => c + qty);
+
+    const variantId = SHOPIFY_VARIANT_IDS[productId][size];
+    setCartItems((prev) => {
+      const existing = prev.find((item) => item.variantId === variantId);
+      if (existing) {
+        return prev.map((item) =>
+          item.variantId === variantId ? { ...item, quantity: item.quantity + qty } : item
+        );
+      }
+      return [...prev, { variantId, quantity: qty }];
+    });
   };
+
+  const handleCheckout = async () => {
+    if (cartItems.length === 0) return;
+    const checkoutUrl = await createShopifyCheckout(cartItems);
+    window.location.href = checkoutUrl;
+  };
+
 
   if (view === 'terms') {
     return <TermsPage onNavigate={onNavigate} />;
@@ -583,6 +618,7 @@ export default function App() {
         setMenuOpen={setMenuOpen}
         openProduct={openProduct}
         cartCount={cartCount}
+        onCheckout={handleCheckout}
       />
     );
   }
@@ -596,9 +632,10 @@ export default function App() {
         stocks={stocks}
         onAddToCart={handleAddToCart}
         cartCount={cartCount}
+        onCheckout={handleCheckout}
       />
     );
   }
 
-  return <Hero onNavigate={onNavigate} menuOpen={menuOpen} setMenuOpen={setMenuOpen} cartCount={cartCount} />;
+  return <Hero onNavigate={onNavigate} menuOpen={menuOpen} setMenuOpen={setMenuOpen} cartCount={cartCount} onCheckout={handleCheckout} />;
 }
