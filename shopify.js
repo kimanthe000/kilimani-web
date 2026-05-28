@@ -17,7 +17,7 @@ export async function createShopifyCheckout(cartItems) {
   `;
 
   const response = await fetch(
-    `https://${SHOPIFY_DOMAIN}/api/2026-04/graphql.json`,
+    `https://${SHOPIFY_DOMAIN}/api/2024-10/graphql.json`,
     {
       method: "POST",
       headers: {
