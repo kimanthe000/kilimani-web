@@ -38,6 +38,11 @@ export async function createShopifyCheckout(cartItems) {
     }
   );
 
-  const { data } = await response.json();
-  return data.cartCreate.cart.checkoutUrl;
+  const json = await response.json();
+console.log('Shopify response:', JSON.stringify(json));
+if (!json.data?.cartCreate?.cart) {
+  throw new Error(json.data?.cartCreate?.userErrors?.[0]?.message || 'Cart creation failed');
+}
+return json.data.cartCreate.cart.checkoutUrl;
+
 }
