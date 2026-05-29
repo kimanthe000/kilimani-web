@@ -43,6 +43,8 @@ console.log('Shopify response:', JSON.stringify(json));
 if (!json.data?.cartCreate?.cart) {
   throw new Error(json.data?.cartCreate?.userErrors?.[0]?.message || 'Cart creation failed');
 }
-return json.data.cartCreate.cart.checkoutUrl;
+const url = json.data.cartCreate.cart.checkoutUrl;
+return url.replace('kilimani.us', '4jy17h-p6.myshopify.com');
+
 
 }
