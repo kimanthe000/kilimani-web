@@ -44,7 +44,8 @@ if (!json.data?.cartCreate?.cart) {
   throw new Error(json.data?.cartCreate?.userErrors?.[0]?.message || 'Cart creation failed');
 }
 const url = json.data.cartCreate.cart.checkoutUrl;
-return url.replace('kilimani.us', '4jy17h-p6.myshopify.com');
+return url;
+
 
 
 }
