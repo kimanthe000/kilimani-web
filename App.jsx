@@ -592,12 +592,7 @@ export default function App() {
   try {
     const checkoutUrl = await createShopifyCheckout(cartItems);
     if (checkoutUrl) {
-      const a = document.createElement('a');
-      a.href = checkoutUrl;
-      a.rel = 'noopener noreferrer';
-      document.body.appendChild(a);
-      a.click();
-      document.body.removeChild(a);
+      window.location.href = checkoutUrl;
     } else {
       console.error('No checkout URL returned from Shopify');
     }
