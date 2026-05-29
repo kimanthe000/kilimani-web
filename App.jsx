@@ -588,10 +588,18 @@ export default function App() {
   };
 
   const handleCheckout = async () => {
-    if (cartItems.length === 0) return;
+  if (cartItems.length === 0) return;
+  try {
     const checkoutUrl = await createShopifyCheckout(cartItems);
-    window.location.href = checkoutUrl;
-  };
+    if (checkoutUrl) {
+      window.location.href = checkoutUrl;
+    } else {
+      console.error('No checkout URL returned from Shopify');
+    }
+  } catch (err) {
+    console.error('Checkout error:', err.message);
+  }
+};
 
 
   if (view === 'terms') {
