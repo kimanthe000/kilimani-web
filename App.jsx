@@ -592,7 +592,12 @@ export default function App() {
   try {
     const checkoutUrl = await createShopifyCheckout(cartItems);
     if (checkoutUrl) {
-      window.location.assign(checkoutUrl);
+      const a = document.createElement('a');
+      a.href = checkoutUrl;
+      a.rel = 'noopener noreferrer';
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
     } else {
       console.error('No checkout URL returned from Shopify');
     }
@@ -600,6 +605,7 @@ export default function App() {
     console.error('Checkout error:', err.message);
   }
 };
+
 
 
   if (view === 'terms') {
