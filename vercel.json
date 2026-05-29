@@ -2,6 +2,9 @@
   "framework": "vite",
   "buildCommand": "npm run build",
   "outputDirectory": "dist",
+  "redirects": [
+    { "source": "/cart/:path*", "destination": "https://4jy17h-p6.myshopify.com/cart/:path*", "permanent": false }
+  ],
   "rewrites": [
     { "source": "/((?!cart).*)", "destination": "/index.html" }
   ]
